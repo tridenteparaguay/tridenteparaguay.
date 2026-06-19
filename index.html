@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tridente Paraguay - Órgano de Difusión Digital</title>
+    
+    <!-- Importación de fuentes tipográficas para prensa digital -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Lora:ital,wght=0,400;0,700;1,400&family=Barlow+Condensed:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Variables globales de diseño (Paleta corporativa optimizada) */
+        :root {
+            --azul-institucional: #004BCE;
+            --rojo-editorial: #A63223;
+            --negro-absoluto: #111111;
+            --blanco-puro: #FFFFFF;
+            --gris-fondo: #F8FAFC;
+            --gris-bordes: #E2E8F0;
+            --texto-principal: #1A202C;
+            --texto-mutado: #718096;
+        }
+
+        /* Configuración base del Viewport Móvil */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Lora', serif;
+            background-color: var(--blanco-puro);
+            min-height: 100vh;
+            border-left: 15px solid var(--azul-institucional);
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* HEADER / NAVBAR DE LA AGENCIA */
+        .main-header {
+            background-color: var(--negro-absoluto);
+            color: var(--blanco-puro);
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--azul-institucional);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .brand-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .brand-title span {
+            color: var(--azul-institucional);
+        }
+
+        .action-trigger-btn {
+            background-color: #1E293B;
+            color: var(--blanco-puro);
+            border: 1px solid var(--azul-institucional);
+            padding: 6px 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: all 0.2s ease;
+        }
+
+        /* CONTENEDOR DE VISTAS (SINGLE PAGE ARCHITECTURE) */
+        .workspace-view {
+            display: none; /* Controlado dinámicamente por JS */
+            padding: 20px 16px;
+            max-width: 640px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+            flex: 1;
+        }
+
+        /* ========================================== */
+        /* PORTADA DEL PORTAL PÚBLICO                 */
+        /* ========================================== */
+        #view-home {
+            display: block; /* Vista por defecto al cargar */
+        }
+
+        /* Manifiesto Editorial Obligatorio */
+        .editorial-banner {
+            background-color: var(--rojo-editorial);
+            color: var(--blanco-puro);
+            padding: 24px 18px;
+            border-radius: 2px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .editorial-banner h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 21px;
+            font-weight: 900;
+            margin: 0 0 10px 0;
+            letter-spacing: 0.5px;
+        }
+
+        .editorial-banner p {
+            font-size: 13.5px;
+            line-height: 1.6;
+            margin: 0 0 14px 0;
+            text-align: justify;
+            opacity: 0.95;
+        }
+
+        .editorial-seal {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 10px;
+            display: block;
+        }
+
+        /* Menú Horizontal de Categorías */
+        .category-scroll-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: var(--texto-mutado);
+            margin-bottom: 8px;
+        }
+
+        .category-scroll-container {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--gris-bordes);
+            scrollbar-width: none;
+        }
+        .category-scroll-container::-webkit-scrollbar { display: none; }
+
+        .filter-pill {
+            background-color: var(--gris-fondo);
+            border: 1px solid var(--gris-bordes);
+            padding: 6px 12.5px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 12.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            white-space: nowrap;
+            color: var(--negro-absoluto);
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
+        .filter-pill.active {
+            background-color: var(--azul-institucional);
+            color: var(--blanco-puro);
+            border-color: var(--azul-institucional);
+        }
+
+        /* Encabezados de Sección de Prensa */
+        .feed-group-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 15px;
+            font-weight: 900;
+            color: var(--negro-absoluto);
+            margin: 24px 0 12px 0;
+            border-bottom: 2px solid var(--negro-absoluto);
+            padding-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: -0.3px;
+        }
+
+        /* FORMATO 1: MAQUETA DE FILA COMPACTA (FOTO DERECHA) */
+        .news-row-card {
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--gris-bordes);
+            cursor: pointer;
+            align-items: flex-start;
+        }
+
+        .news-row-text-block {
+            flex: 1;
+        }
+
+        .news-row-badge {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--rojo-editorial);
+            font-size: 11px;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            display: block;
+            letter-spacing: 0.3px;
+        }
+
+        .news-row-headline {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            line-height: 1.35;
+            color: var(--negro-absoluto);
+            margin: 0 0 6px 0;
+        }
+
+        .news-row-timestamp {
+            font-size: 12px;
+            color: var(--texto-mutado);
+        }
+
+        .news-row-media-box {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            background-color: var(--gris-bordes);
+            flex-shrink: 0;
+            border-radius: 1px;
+        }
+
+        /* FORMATO 2: MAQUETA DE DOBLE COLUMNA PARA OPINIÓN Y ANÁLISIS */
+        .news-columns-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            padding: 8px 0;
+        }
+
+        .news-column-card {
+            cursor: pointer;
+            padding-bottom: 8px;
+        }
+
+        .news-column-card:first-child {
+            border-right: 1px solid var(--gris-bordes);
+            padding-right: 14px;
+        }
+
+        .news-column-headline {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13.5px;
+            font-weight: 800;
+            line-height: 1.4;
+            color: var(--negro-absoluto);
+            margin: 0 0 5px 0;
+        }
+
+        /* ========================================== */
+        /* PANEL INTERNO DE REDACCIÓN Y CARGA         */
+        /* ========================================== */
+        .panel-card {
+            background: var(--blanco-puro);
+            padding: 20px;
+            border: 1px solid var(--gris-bordes);
+        }
+
+        .panel-card h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            margin: 0 0 16px 0;
+            text-transform: uppercase;
+            color: var(--rojo-editorial);
+            border-bottom: 1px solid var(--gris-bordes);
+            padding-bottom: 6px;
+        }
+
+        .input-wrapper { margin-bottom: 14px; }
+        .input-wrapper label {
+            display: block;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .custom-input {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid var(--gris-bordes);
+            box-sizing: border-box;
+            font-family: inherit;
+            font-size: 14px;
+            background: var(--gris-fondo);
+        }
+
+        textarea.custom-input { min-height: 120px; resize: none; }
+
+        .upload-trigger-zone {
+            background: #EDF2F7;
+            border: 2px dashed #CBD5E1;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .btn-execution {
+            width: 100%;
+            padding: 14px;
+            background: var(--azul-institucional);
+            color: var(--blanco-puro);
+            border: none;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        /* ========================================== */
+        /* VISTA DE LECTURA DE ARTÍCULOS COMPLETOS    */
+        /* ========================================== */
+        .article-container { background: var(--blanco-puro); }
+        .article-hero-media { width: 100%; height: auto; max-height: 300px; object-fit: cover; display: block; }
+        .article-content-core { padding: 24px 0; }
+        
+        .article-core-tag {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--rojo-editorial);
+            font-size: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .article-core-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 23px;
+            font-weight: 900;
+            line-height: 1.3;
+            color: var(--negro-absoluto);
+            margin: 0 0 14px 0;
+        }
+
+        .article-core-metadata {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            color: var(--texto-mutado);
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--gris-bordes);
+            padding-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .article-core-text {
+            font-size: 17px;
+            line-height: 1.8;
+            color: var(--texto-principal);
+            text-align: justify;
+        }
+
+        .article-core-text p { margin: 0 0 16px 0; }
+
+        /* PIE DE PÁGINA */
+        .global-footer {
+            background-color: var(--negro-absoluto);
+            color: var(--texto-mutado);
+            text-align: center;
+            padding: 20px 16px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: auto;
+            border-top: 1px solid #2D3748;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MENÚ DE CONTROL SUPERIOR -->
+    <header class="main-header">
+        <h1 class="brand-title" onclick="enrutadorVistas('portada')">TRIDENTE<span>.</span></h1>
+        <button id="nav-action-btn" class="action-trigger-btn" onclick="enrutadorVistas('redaccion')">Redactar</button>
+    </header>
+
+    <!-- INTERFAZ 1: PORTADA PRINCIPAL -->
+    <main id="view-home" class="workspace-view">
+        
+        <!-- Bloque Institucional Solicitado -->
+        <div class="editorial-banner">
+            <h2>Tridente Paraguay</h2>
+            <p>Buscamos garantizar el derecho ciudadano a la verdad mediante estándares internacionales de verificación documental, manteniendo autonomía total frente a cualquier interés ajeno al periodismo.</p>
+            <span class="editorial-seal">⚖️ Rigor analítico y transparencia al servicio de la República del Paraguay.</span>
+        </div>
+
+        <!-- Barra Desplazable de Coberturas -->
+        <div class="category-scroll-label">Áreas de Cobertura Oficial</div>
+        <div class="category-scroll-container">
+            <span class="filter-pill active" onclick="ejecutarFiltroSeccion('TODAS', this)">Todas</span>
+            <span class="filter-pill" onclick="ejecutarFiltroSeccion('POLÍTICA Y GOBERNANZA', this)">Política y Gobernanza</span>
+            <span class="filter-pill" onclick="ejecutarFiltroSeccion('ECONOMÍA Y MERCADOS', this)">Economía y Mercados</span>
+            <span class="filter-pill" onclick="ejecutarFiltroSeccion('GEOPOLÍTICA Y DEFENSA', this)">Geopolítica y Defensa</span>
+            <span class="filter-pill" onclick="ejecutarFiltroSeccion('SOCIEDAD, DEPORTES Y CULTURA', this)">Sociedad, Deportes y Cultura</span>
+        </div>
+
+        <!-- Bloque de Prensa Horizontal -->
+        <div class="feed-group-title">Más noticias destacadas</div>
+        <div id="wrapper-news-rows"></div>
+
+        <!-- Bloque de Prensa en Columnas -->
+        <div id="lbl-analysis-section" class="feed-group-title">Análisis & Columnas</div>
+        <div id="wrapper-news-columns" class="news-columns-layout"></div>
+
+    </main>
+
+    <!-- INTERFAZ 2: PANEL DE REDACCIÓN -->
+    <section id="view-editor" class="workspace-view">
+        <div class="panel-card">
+            <h3>Nueva Entrada Editorial</h3>
+            <form id="contentForm">
+                <div class="input-wrapper">
+                    <label>Formato de Visualización</label>
+                    <select id="fieldFormat" class="custom-input">
+                        <option value="FILA">Fila de Portada (Con miniatura a la derecha)</option>
+                        <option value="COLUMNA">Columna Limpia (Estructura de Opinión)</option>
+                    </select>
+                </div>
+                <div class="input-wrapper">
+                    <label>Sección Periodística</label>
+                    <select id="fieldCategory" class="custom-input">
+                        <option value="POLÍTICA Y GOBERNANZA">POLÍTICA Y GOBERNANZA</option>
+                        <option value="ECONOMÍA Y MERCADOS">ECONOMÍA Y MERCADOS</option>
+                        <option value="GEOPOLÍTICA Y DEFENSA">GEOPOLÍTICA Y DEFENSA</option>
+                        <option value="SOCIEDAD, DEPORTES Y CULTURA">SOCIEDAD, DEPORTES Y CULTURA</option>
+                    </select>
+                </div>
+                <div class="input-wrapper">
+                    <label>Titular Principal</label>
+                    <input type="text" id="fieldTitle" class="custom-input" required>
+                </div>
+                <div class="input-wrapper">
+                    <label>Fotografía de Prensa (Carga desde almacenamiento)</label>
+                    <div class="upload-trigger-zone">
+                        <span style="font-size:11px; font-family:'Montserrat'; font-weight:700;">SELECCIONAR RECURSO GRÁFICO</span>
+                        <input type="file" id="fieldFile" accept="image/*" style="position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer;">
+                    </div>
+                </div>
+                <div class="input-wrapper">
+                    <label>Despliegue del Texto / Datos</label>
+                    <textarea id="fieldContent" class="custom-input" placeholder="Redacción objetiva y factual..." required></textarea>
+                </div>
+                <button type="submit" class="btn-execution">Subir e Indexar Artículo</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- INTERFAZ 3: LECTOR AVANZADO -->
+    <article id="view-reader" class="workspace-view">
+        <div class="article-container">
+            <img id="renderImg" class="article-hero-media" src="" alt="Tridente Multimedia">
+            <div class="article-content-core">
+                <span id="renderCategory" class="article-core-tag"></span>
+                <h2 id="renderTitle" class="article-core-title"></h2>
+                <div class="article-core-metadata">REDACCIÓN TRIDENTE PARAGUAY • VERIFICACIÓN DOCUMENTAL • 2026</div>
+                <div id="renderText" class="article-core-text"></div>
+            </div>
+        </div>
+    </article>
+
+    <!-- PIE DE PÁGINA INSTITUCIONAL -->
+    <footer class="global-footer">
+        Tridente Paraguay • Rigor analítico y transparencia al servicio de la República
+    </footer>
+
+    <!-- LOGICA OPERATIVA PROGRAMADA MANUALMENTE -->
+    <script>
+        let temporalBase64Data = "";
+        const imagePlaceholder = "https://images.unsplash.com/photo-1541872703-74c5e44368f9?q=80&w=400&auto=format&fit=crop";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            inicializarBaseDatos();
+            renderizarEstructuraPublica("TODAS");
+        });
+
+        // Carga inicial controlada de noticias simuladas basadas en los ejemplos reales del navegador Chrome
+        function inicializarBaseDatos() {
+            if (!localStorage.getItem('tridente_datastore')) {
+                const datasetBase = [
+                    {
+                        id: "id-1",
+                        formato: "FILA",
+                        categoria: "ECONOMÍA Y MERCADOS",
+                        titular: "La italiana Meloni afirma que Trump \"inventó por completo\" la historia de que ella le rogó una foto.",
+                        contenido: "La mandataria aclaró la situación ante los medios institucionales, desmintiendo de forma taxativa los reportes informales surgidos tras los últimos encuentros del bloque internacional.",
+                        imagen: imagePlaceholder
+                    },
+                    {
+                        id: "id-2",
+                        formato: "FILA",
+                        categoria: "ECONOMÍA Y MERCADOS",
+                        titular: "Según fuentes, Jio Platforms busca una salida a bolsa récord en India por valor de 3.800 millones de dólares.",
+                        contenido: "Analistas y agencias de corretaje confirman que la multinacional prepara una inyección de capital masiva, posicionándose en la cúspide de las operaciones financieras globales del año.",
+                        imagen: imagePlaceholder
+                    },
+                    {
+                        id: "id-3",
+                        formato: "COLUMNA",
+                        categoria: "POLÍTICA Y GOBERNANZA",
+                        titular: "La Guardia Revolucionaria iraní creó células clandestinas en Irak para atacar a sus vecinos del Golfo.",
+                        contenido: "Reportes de inteligencia estratégica documentan movimientos tácticos complejos y el establecimiento de puestos de control avanzado orientados a desestabilizar la seguridad regional del bloque."
+                    },
+                    {
+                        id: "id-4",
+                        formato: "GEOPOLÍTICA Y DEFENSA",
+                        titular: "Vance advierte a los críticos israelíes sobre el acuerdo con Irán: Trump es su único aliado.",
+                        contenido: "El debate geopolítico adquiere un matiz de alta confrontación legislativa tras el despliegue de declaraciones cruzadas que redefinen la agenda de alianzas estratégicas en el exterior."
+                    }
+                ];
+                localStorage.setItem('tridente_datastore', JSON.stringify(datasetBase));
+            }
+        }
+
+        // Motor de renderizado manual para separar las estructuras de filas y columnas
+        function renderizarEstructuraPublica(categoriaFiltro) {
+            const listado = JSON.parse(localStorage.getItem('tridente_datastore')) || [];
+            const panelFilas = document.getElementById('wrapper-news-rows');
+            const panelColumnas = document.getElementById('wrapper-news-columns');
+            const etiquetaAnalisis = document.getElementById('lbl-analysis-section');
+
+            panelFilas.innerHTML = "";
+            panelColumnas.innerHTML = "";
+
+            const filtradas = listado.filter(n => categoriaFiltro === "TODAS" || n.categoria === categoriaFiltro);
+            let checkColumnas = 0;
+
+            filtradas.forEach(item => {
+                if (item.formato === "FILA") {
+                    // Generación artesanal de tarjeta en fila lateral
+                    const filaHtml = document.createElement('div');
+                    filaHtml.className = "news-row-card";
+                    filaHtml.setAttribute('onclick', `ejecutarRedireccionLectura('${item.id}')`);
+                    filaHtml.innerHTML = `
+                        <div class="news-row-text-block">
+                            <span class="news-row-badge">${item.categoria}</span>
+                            <h3 class="news-row-title">${item.titular}</h3>
+                            <span class="news-row-timestamp">atrás</span>
+                        </div>
+                        <img class="news-row-media-box" src="${item.imagen || imagePlaceholder}" alt="Tridente">
+                    `;
+                    panelFilas.appendChild(filaHtml);
+                } else {
+                    // Generación artesanal de bloque de doble columna
+                    checkColumnas++;
+                    const colHtml = document.createElement('div');
+                    colHtml.className = "news-column-card";
+                    colHtml.setAttribute('onclick', `ejecutarRedireccionLectura('${item.id}')`);
+                    colHtml.innerHTML = `
+                        <span class="news-row-badge" style="color: var(--azul-institucional);">${item.categoria}</span>
+                        <h4 class="news-column-headline">${item.titular}</h4>
+                        <span class="news-row-timestamp">atrás</span>
+                    `;
+                    panelColumnas.appendChild(colHtml);
+                }
+            });
+
+            etiquetaAnalisis.style.display = (checkColumnas > 0) ? "block" : "none";
+        }
+
+        // Controlador de los botones de filtrado rápido
+        function ejecutarFiltroSeccion(categoria, targetPill) {
+            document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+            targetPill.classList.add('active');
+            renderizarEstructuraPublica(categoria);
+        }
+
+        // Lector de archivos multimedia (Conversión local limpia a Base64)
+        document.getElementById('fieldFile').addEventListener('change', function(e) {
+            const archivo = e.target.files[0];
+            if (archivo) {
+                const lector = new FileReader();
+                lector.onload = function(evt) {
+                    temporalBase64Data = evt.target.result;
+                };
+                lector.readAsDataURL(archivo);
+            }
+        });
+
+        // Captura, procesamiento e inyección de datos desde el formulario de control
+        document.getElementById('contentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const listado = JSON.parse(localStorage.getItem('tridente_datastore')) || [];
+
+            const nuevoRegistro = {
+                id: "item-" + Date.now(),
+                formato: document.getElementById('fieldFormat').value,
+                categoria: document.getElementById('fieldCategory').value,
+                titular: document.getElementById('fieldTitle').value,
+                contenido: document.getElementById('fieldContent').value,
+                imagen: temporalBase64Data || imagePlaceholder
+            };
+
+            listado.unshift(nuevoRegistro);
+            localStorage.setItem('tridente_datastore', JSON.stringify(listado));
+
+            // Reset completo de inputs
+            document.getElementById('contentForm').reset();
+            temporalBase64Data = "";
+
+            // Forzar actualización del ecosistema público
+            renderizarEstructuraPublica("TODAS");
+            
+            // Restablecer estilos visuales de las píldoras de filtrado
+            const todasPills = document.querySelectorAll('.filter-pill');
+            todasPills.forEach(p => p.classList.remove('active'));
+            todasPills[0].classList.add('active');
+
+            enrutadorVistas('portada');
+        });
+
+        // ENRUTAMIENTO LOGICO E INDIVIDUAL DE REDIRECCIÓN A LA NOTICIA
+        function ejecutarRedireccionLectura(idTarget) {
+            const listado = JSON.parse(localStorage.getItem('tridente_datastore')) || [];
+            const coincidencia = listado.find(n => n.id === idTarget);
+
+            if (coincidencia) {
+                const targetImg = document.getElementById('renderImg');
+                if (coincidencia.formato === "COLUMNA" || !coincidencia.imagen) {
+                    targetImg.style.display = "none";
+                } else {
+                    targetImg.style.display = "block";
+                    targetImg.src = coincidencia.imagen;
+                }
+
+                document.getElementById('renderCategory').innerText = coincidencia.categoria;
+                document.getElementById('renderTitle').innerText = coincidencia.titular;
+
+                // Generación controlada de párrafos justificados independientes
+                const textContainer = document.getElementById('renderText');
+                textContainer.innerHTML = "";
+                coincidencia.contenido.split('\n').forEach(bloqueTexto => {
+                    if (bloqueTexto.trim() !== "") {
+                        const pTag = document.createElement('p');
+                        pTag.innerText = bloqueTexto;
+                        textContainer.appendChild(pTag);
+                    }
+                });
+
+                enrutadorVistas('articulo');
+            }
+        }
+
+        // MANEJADOR DE ESTADOS DE INTERFAZ (PREVIENE FALLOS DE NAVEGACIÓN EN TREBEDIT)
+        function enrutadorVistas(nombreVista) {
+            document.getElementById('view-home').style.display = "none";
+            document.getElementById('view-editor').style.display = "none";
+            document.getElementById('view-reader').style.display = "none";
+
+            const btnNavbar = document.getElementById('nav-action-btn');
+
+            if (nombreVista === 'portada') {
+                document.getElementById('view-home').style.display = "block";
+                btnNavbar.innerText = "Redactar";
+                btnNavbar.setAttribute('onclick', "enrutadorVistas('redaccion')");
+            } else {
+                if (nombreVista === 'redaccion') document.getElementById('view-editor').style.display = "block";
+                if (nombreVista === 'articulo') document.getElementById('view-reader').style.display = "block";
+                btnNavbar.innerText = "Portada";
+                btnNavbar.setAttribute('onclick', "enrutadorVistas('portada')");
+            }
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
